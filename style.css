@@ -1,0 +1,111 @@
+* {
+  box-sizing: border-box;
+}
+:root {
+  --hue: 290;
+}
+body {
+  background: hsl(var(--hue), 20%, 65%);
+  color: hsl(var(--hue), 20%, 35%);
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
+body:after {
+  content: "Tap";
+  font-weight: bold;
+  font-family: sans-serif;
+  position: fixed;
+  bottom: 1rem;
+  right: 2rem;
+  font-size: 2rem;
+}
+#app {
+  transform-style: preserve-3d;
+  perspective: 50vmin;
+}
+.flippy-snap {
+  --count: 0;
+  height: 50vmin;
+  width: 50vmin;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-size, 10), 1fr);
+  grid-template-rows: repeat(var(--grid-size, 10), 1fr);
+  perspective: 50vmin;
+  transform-style: preserve-3d;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  --rx: 0.1;
+  --ry: 0.25;
+  --r: 0.01;
+  --x: calc(((var(--rx, 0) * var(--range-y, 0))) * 1deg);
+  --y: calc(((var(--ry, 0) * var(--range-x, 0))) * 1deg);
+  --ro: calc(((var(--r, 0) * var(--range-x, 0))) * 1deg);
+  transform: translate3d(0, 0, 5vmin) rotateX(var(--x)) rotateY(var(--y)) rotate(var(--ro));
+}
+.flippy-snap:after {
+  content: '';
+  height: 5%;
+  width: 80%;
+  position: absolute;
+  background: hsl(var(--hue), 30%, 30%);
+  filter: blur(14px);
+  top: 110%;
+  left: 50%;
+  right: 0;
+  transform: translate(-50%, 0) rotateX(90deg) translate(0, -50%);
+}
+.flippy-snap__loader {
+  border-radius: 50%;
+  border: 6px solid #fff;
+  border-left-color: #000;
+  border-right-color: #000;
+  position: absolute;
+  right: 20%;
+  bottom: 20%;
+  height: 8%;
+  width: 8%;
+  transform: translate3d(0, 0, 5vmin) rotate(0deg);
+  -webkit-animation: spin 1s infinite;
+          animation: spin 1s infinite;
+}
+@-webkit-keyframes spin {
+  to {
+    transform: translate3d(0, 0, 5vmin) rotate(360deg);
+  }
+}
+@keyframes spin {
+  to {
+    transform: translate3d(0, 0, 5vmin) rotate(360deg);
+  }
+}
+.flippy-card {
+  --hovered: 1;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  transform: translate3d(0, 0, calc((1 - (var(--hovered, 1))) * 5vmin)) rotateX(calc(var(--count) * -180deg));
+  transform-style: preserve-3d;
+}
+.flippy-card__front,
+.flippy-card__rear {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background-image: var(--current-image);
+  background-position: calc(var(--x, 0) * -100%) calc(var(--y, 0) * -100%);
+  background-size: calc(var(--grid-size, 10) * 100%);
+}
+.flippy-card__rear {
+  background-image: var(--next-image);
+  transform: rotateY(180deg) rotate(180deg);
+}
